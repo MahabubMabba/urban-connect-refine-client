@@ -1,15 +1,27 @@
 
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  let events = [];
+
+  try {
+    const response = await fetch("http://localhost:5000/events?limit=6", {
+      cache: "no-store",
+    });
+
+    if (response.ok) {
+      events = await response.json();
+    }
+  } catch (error) {
+    console.log("Failed to load events:", error);
+  }
+
   return (
     <main>
-
       {/* Hero Section */}
       <section className="bg-[#F4F6FA]">
         <div className="max-w-7xl mx-auto px-6 py-20 md:py-28">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
             <div>
               <span className="inline-block bg-blue-100 text-blue-700 text-sm font-medium px-4 py-2 rounded-full mb-6">
                 Together for a Better Community
@@ -103,16 +115,13 @@ export default function Home() {
                 Join the Movement
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-
       {/* Features Section */}
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-6">
-
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-[#2563EB] font-semibold text-sm">
               WHAT WE DO
@@ -129,7 +138,6 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
             {/* Feature 1 */}
             <div className="p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition">
               <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
@@ -177,11 +185,89 @@ export default function Home() {
                 healthier, and better community.
               </p>
             </div>
-
           </div>
         </div>
       </section>
 
+      {/* Recent Events Section */}
+      <section className="bg-[#F4F6FA] py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-5 mb-12">
+            <div>
+              <span className="text-[#2563EB] font-semibold text-sm">
+                JOIN OUR COMMUNITY
+              </span>
+
+              <h2 className="text-3xl md:text-4xl font-bold text-[#142B4A] mt-3">
+                Recent Upcoming Events
+              </h2>
+
+              <p className="text-gray-600 mt-3">
+                Discover events and become part of something meaningful.
+              </p>
+            </div>
+
+            <Link
+              href="/upcoming-events"
+              className="bg-[#142B4A] text-white px-6 py-3 rounded-lg hover:bg-[#2563EB] transition"
+            >
+              View All Events
+            </Link>
+          </div>
+
+          {events.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <div
+                  key={event._id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition"
+                >
+                  <img
+                    src={event.thumbnail}
+                    alt={event.title}
+                    className="w-full h-52 object-cover"
+                  />
+
+                  <div className="p-6">
+                    <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                      {event.eventType}
+                    </span>
+
+                    <h3 className="text-xl font-bold text-[#142B4A] mt-4">
+                      {event.title}
+                    </h3>
+
+                    <p className="text-gray-500 text-sm mt-3">
+                      Location: {event.location}
+                    </p>
+
+                    <p className="text-gray-500 text-sm mt-2">
+                      Date: {event.eventDate}
+                    </p>
+
+                    <Link
+                      href={`/upcoming-events/${event._id}`}
+                      className="inline-block mt-5 text-[#2563EB] font-semibold hover:underline"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl p-12 text-center">
+              <h3 className="text-xl font-semibold text-[#142B4A]">
+                No Upcoming Events
+              </h3>
+
+              <p className="text-gray-500 mt-3">
+                There are no upcoming events available right now.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
