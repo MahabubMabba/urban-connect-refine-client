@@ -12,7 +12,7 @@ const Navbar = () => {
           Urban<span className="text-[#2563EB]">Connect</span>
         </Link>
 
-        {/* Navigation */}
+        {/* Navigation Links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
           <Link href="/" className="hover:text-blue-600">
             Home
@@ -20,6 +20,10 @@ const Navbar = () => {
 
           <Link href="/upcoming-events" className="hover:text-blue-600">
             Upcoming Events
+          </Link>
+
+          <Link href="/dashboard" className="hover:text-blue-600">
+            Dashboard
           </Link>
         </div>
 
